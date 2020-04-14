@@ -9,6 +9,9 @@ import { DatasetDetailsDashboardComponent } from "datasets/dataset-details-dashb
 import { JobsDashboardComponent } from "jobs/jobs-dashboard/jobs-dashboard.component";
 import { JobsDetailComponent } from "../jobs/jobs-detail/jobs-detail.component";
 
+// import { PrimeDashBoard } from "../Prime/prime-dashboard/prime-dashboard.component";
+
+
 import { ErrorPageComponent } from "../shared/modules/error-page/error-page.component";
 
 import { LoginComponent } from "../users/login/login.component";
@@ -37,6 +40,7 @@ import { AppLayoutComponent } from "_layout/app-layout/app-layout.component";
 import { PoliciesDashboardComponent } from "policies/policies-dashboard/policies-dashboard.component";
 import { InstrumentsDashboardComponent } from "instruments/instruments-dashboard/instruments-dashboard.component";
 import { InstrumentDetailsComponent } from "instruments/instrument-details/instrument-details.component";
+import { PrimeDashboardComponent } from "prime/prime-dashboard/prime-dashbaord.component";
 
 export const routes: Routes = [
   {
@@ -158,6 +162,11 @@ export const routes: Routes = [
       {
         path: "user/jobs",
         component: JobsDashboardComponent,
+        canActivate: [AuthCheck]
+      },
+      {
+        path: "prime",
+        component: PrimeDashboardComponent,
         canActivate: [AuthCheck]
       },
       {

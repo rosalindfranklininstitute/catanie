@@ -42,6 +42,8 @@
     "ngx-file-helpers": "^3.0.0",
     "ngx-json-viewer": "^2.4.0",
     "ngx-linky": "^2.2.0",
+    "primeicons": "^2.0.0",
+    "primeng": "^9.0.5",
     "rison": "github:nanonid/rison",
     "rxjs": "^6.5.3",
     "saturn-datepicker": "^8.0.1",

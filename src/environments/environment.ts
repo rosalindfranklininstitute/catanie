@@ -12,7 +12,7 @@ export const environment = {
   synapseBaseUrl: "https://scitest.esss.lu.se",
   riotBaseUrl: "http://scitest.esss.lu.se/riot",
   jupyterHubUrl: "https://jupyterhub.esss.lu.se/",
-  externalAuthEndpoint: "/auth/msad",
+  externalAuthEndpoint: "",
   addDatasetEnabled: true,
   archiveWorkflowEnabled: true,
   columnSelectEnabled: true,

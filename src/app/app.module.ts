@@ -45,6 +45,7 @@ import { AppLayoutComponent } from "./_layout/app-layout/app-layout.component";
 import { LoginHeaderComponent } from "./_layout/login-header/login-header.component";
 import { LoginLayoutComponent } from "./_layout/login-layout/login-layout.component";
 import { JobsModule } from "jobs/jobs.module";
+import { PrimeModule } from "prime/prime.module";
 import { InstrumentsModule } from "./instruments/instruments.module";
 
 @NgModule({
@@ -66,6 +67,7 @@ import { InstrumentsModule } from "./instruments/instruments.module";
     HttpClientModule,
     InstrumentsModule,
     JobsModule,
+    PrimeModule,
     LogbooksModule,
     LayoutModule,
     MatBadgeModule,
