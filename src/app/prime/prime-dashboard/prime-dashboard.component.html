@@ -1,0 +1,195 @@
+<h3>Virtual Scroll - {{ totalRecords }} Rows</h3>
+<p-table
+  #dt
+  [columns]="selectedColumns"
+  [value]="virtualDatasets"
+  [scrollable]="true"
+  [rows]="20"
+  scrollHeight="850px"
+  [virtualScroll]="true"
+  (onLazyLoad)="loadDataOnScroll($event)"
+  [lazy]="true"
+  [totalRecords]="totalRecords"
+  [virtualRowHeight]="34"
+  [responsive]="true"
+  [resizableColumns]="true"
+  [(selection)]="selectedDatasets"
+  selectionMode="multiple"
+  dataKey="pid"
+  [rowTrackBy]="trackByFunction"
+  stateStorage="local"
+  stateKey="datasetstate-local"
+>
+  <!-- The following is needed for scrollable tables with resizable columns -->
+  <ng-template pTemplate="caption">
+    <div style="text-align:left">
+      <p-multiSelect
+        [options]="cols"
+        [(ngModel)]="selectedColumns"
+        optionLabel="header"
+        selectedItemsLabel="{0} columns selected"
+        [style]="{ minWidth: '200px' }"
+        defaultLabel="Choose Columns"
+      >
+      </p-multiSelect>
+    </div>
+    <div class="ui-helper-clearfix" style="text-align: left">
+      <button
+        type="button"
+        pButton
+        icon="pi pi-file-o"
+        iconPos="left"
+        label="CSV"
+        (click)="dt.exportCSV()"
+        style="margin-right: 0.5em;"
+      ></button>
+      <!--             <button type="button" pButton icon="pi pi-file-excel" iconPos="left" label="EXCEL" (click)="exportExcel()" style="margin-right: 0.5em;" class="ui-button-success"></button>
+            <button type="button" pButton icon="pi pi-file-pdf" iconPos="left" label="PDF" (click)="exportPdf()" class="ui-button-warning"></button>
+ -->
+      <button
+        type="button"
+        pButton
+        icon="pi pi-file"
+        iconPos="left"
+        label="CSV - Selection Only"
+        (click)="dt.exportCSV({ selectionOnly: true })"
+        style="float:right"
+      ></button>
+    </div>
+    <div style="text-align:right">
+      <ul>
+        <li *ngFor="let dataset of selectedDatasets">
+          {{ dataset.datasetName }}
+        </li>
+      </ul>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="colgroup" let-columns>
+    <colgroup>
+      <col [style.width]="'3%'" />
+      <col *ngFor="let col of columns" [style.width]="col.width" />
+    </colgroup>
+  </ng-template>
+  <ng-template pTemplate="header" let-columns>
+    <tr>
+      <th style="width: 3em"></th>
+      <th
+        *ngFor="let col of columns"
+        [pSortableColumn]="col.field"
+        pResizableColumn
+      >
+        {{ col.header }}
+        <p-sortIcon
+          [field]="col.field"
+          ariaLabel="Activate to sort"
+          ariaLabelDesc="Activate to sort in descending order"
+          ariaLabelAsc="Activate to sort in ascending order"
+        ></p-sortIcon>
+      </th>
+    </tr>
+    <tr>
+      <th style="width: 3em"></th>
+      <th *ngFor="let col of columns" [ngSwitch]="col.field">
+        <div *ngSwitchCase="'size'">
+          Value > {{ sizeFilter }}
+          <i
+            class="pi pi-times"
+            (click)="
+              sizeFilter = null; dt.filter(null, col.field, col.filterMatchMode)
+            "
+            style="cursor:pointer"
+            *ngIf="sizeFilter"
+          ></i>
+          <p-slider
+            [style]="{ width: '100%', 'margin-top': '8px' }"
+            [(ngModel)]="sizeFilter"
+            [min]="0"
+            [max]="10000000000"
+            (onChange)="onSizeChange($event, dt)"
+          ></p-slider>
+        </div>
+        <p-multiSelect
+          *ngSwitchCase="'type'"
+          [options]="dstypes"
+          defaultLabel="All types"
+          (onChange)="dt.filter($event.value, col.field, 'in')"
+        ></p-multiSelect>
+        <input
+          *ngSwitchDefault
+          pInputText
+          type="text"
+          placeholder="Contains"
+          class="ui-column-filter"
+          style="width: 100%;"
+          (input)="dt.filter($event.target.value, col.field, 'contains')"
+        />
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template
+    pTemplate="body"
+    let-rowData
+    let-expanded="expanded"
+    let-columns="columns"
+    let-rowIndex="rowIndex"
+  >
+    <tr
+      [pSelectableRow]="rowData"
+      [pSelectableRowIndex]="rowIndex"
+      style="height:34px"
+    >
+      <td>
+        <a href="#" [pRowToggler]="rowData">
+          <i
+            [ngClass]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+          ></i>
+        </a>
+      </td>
+      <td *ngFor="let col of columns" class="ui-resizable-column">
+        <!-- {{rowData[col.field]}} -->
+        {{ getCellData(rowData, col) }}
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="rowexpansion" let-rowData let-columns="columns">
+    <tr>
+      <td [attr.colspan]="columns.length + 1">
+        <div class="ui-g ui-fluid">
+          <!--                     <div class="ui-g-12 ui-md-3" style="text-align:center">
+                        <img [attr.alt]="rowData.brand" src="assets/showcase/images/demo/car/{{rowData.brand}}.png">
+                    </div> -->
+          <div class="ui-g-12 ui-md-9">
+            <div style="display:inline-flex;">
+              <div>
+                <b>Scientific Metadata:</b>
+                <ngx-json-viewer
+                  [json]="rowData.scientificMetadata"
+                ></ngx-json-viewer>
+              </div>
+              <div>
+                <b>Dataset Lifecycle:</b>
+                <ngx-json-viewer
+                  [json]="rowData.datasetlifecycle"
+                ></ngx-json-viewer>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="loadingbody" let-columns="columns">
+    <tr style="height:34px">
+      <td *ngFor="let col of columns">
+        <div class="loading-text"></div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage" let-columns>
+    <tr>
+      <td [attr.colspan]="columns.length">
+        No records found
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
