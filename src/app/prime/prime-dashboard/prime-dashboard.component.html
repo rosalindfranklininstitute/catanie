@@ -2,7 +2,7 @@
 <p-table
   #dt
   [columns]="selectedColumns"
-  [value]="virtualDatasets"
+  [value]="virtualData"
   [scrollable]="true"
   [rows]="20"
   scrollHeight="850px"
@@ -20,50 +20,7 @@
   stateStorage="local"
   stateKey="datasetstate-local"
 >
-  <!-- The following is needed for scrollable tables with resizable columns -->
-  <ng-template pTemplate="caption">
-    <div style="text-align:left">
-      <p-multiSelect
-        [options]="cols"
-        [(ngModel)]="selectedColumns"
-        optionLabel="header"
-        selectedItemsLabel="{0} columns selected"
-        [style]="{ minWidth: '200px' }"
-        defaultLabel="Choose Columns"
-      >
-      </p-multiSelect>
-    </div>
-    <div class="ui-helper-clearfix" style="text-align: left">
-      <button
-        type="button"
-        pButton
-        icon="pi pi-file-o"
-        iconPos="left"
-        label="CSV"
-        (click)="dt.exportCSV()"
-        style="margin-right: 0.5em;"
-      ></button>
-      <!--             <button type="button" pButton icon="pi pi-file-excel" iconPos="left" label="EXCEL" (click)="exportExcel()" style="margin-right: 0.5em;" class="ui-button-success"></button>
-            <button type="button" pButton icon="pi pi-file-pdf" iconPos="left" label="PDF" (click)="exportPdf()" class="ui-button-warning"></button>
- -->
-      <button
-        type="button"
-        pButton
-        icon="pi pi-file"
-        iconPos="left"
-        label="CSV - Selection Only"
-        (click)="dt.exportCSV({ selectionOnly: true })"
-        style="float:right"
-      ></button>
-    </div>
-    <div style="text-align:right">
-      <ul>
-        <li *ngFor="let dataset of selectedDatasets">
-          {{ dataset.datasetName }}
-        </li>
-      </ul>
-    </div>
-  </ng-template>
+
   <ng-template pTemplate="colgroup" let-columns>
     <colgroup>
       <col [style.width]="'3%'" />

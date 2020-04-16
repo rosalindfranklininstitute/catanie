@@ -67,7 +67,7 @@ export class PrimeDashboardComponent implements OnInit {
   datasource: any[];
 
   datasets: any[];
-  virtualDatasets: any[];
+  virtualData: any[];
 
   totalRecords: number;
 
@@ -83,7 +83,7 @@ export class PrimeDashboardComponent implements OnInit {
 
   sizeTimeout: any;
 
-  selectedDatasets: any[];
+  selectedData: any[];
 
   jobsCount$ = this.store.pipe(select(getJobsCount));
   jobsPerPage$ = this.store.pipe(select(getJobsPerPage));
@@ -132,7 +132,7 @@ export class PrimeDashboardComponent implements OnInit {
     // console.log("loadDataOnSCroll:", event)
     this.loading = true;
     this.datasetService.getDatasets(event).subscribe((result) => {
-      this.virtualDatasets = result;
+      this.virtualData = result;
       this.loading = false;
       // console.log("Result getdataset:",result);
       this.datasetService.getCount(event.filters).subscribe((result) => {

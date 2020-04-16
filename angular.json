@@ -37,7 +37,13 @@
               "src/assets/icons/safari-pinned-tab.svg",
               "src/manifest.json"
             ],
-            "styles": ["src/styles.css", "src/theme.scss"],
+            "styles": [
+              "src/styles.css",
+              "src/theme.scss",
+              "node_modules/primeng/resources/themes/nova-light/theme.css",
+              "node_modules/primeng/resources/primeng.min.css",
+              "node_modules/primeicons/primeicons.css"
+            ],
             "scripts": ["node_modules/hammerjs/hammer.min.js"]
           },
           "configurations": {
@@ -270,6 +276,7 @@
             "polyfills": "src/polyfills.ts",
             "scripts": ["node_modules/hammerjs/hammer.min.js"],
             "styles": ["src/styles.css", "src/theme.scss"],
+
             "assets": [
               "src/assets",
               "src/favicon.ico",
