@@ -103,17 +103,24 @@ export class DatasetTableActionsComponent implements OnInit, OnDestroy {
    * @memberof DashboardComponent
    */
   retrieveClickHandle(event): void {
-    const destPath = "/archive/retrieve";
     const dialogRef = this.dialog.open(DialogComponent, {
       width: "auto",
       data: {
         title: "Really retrieve?",
-        question: ""
+        question: "",
+        choice: {
+          title: "Optionally select retrieve destination",
+          options: ["PSI", "CSCS"]
+        }
       }
     });
 
+    // TODO isolate the PSI specific parts in configuration file
+    // or move completely out (handle in nodered code instead)
     dialogRef.afterClosed().subscribe(result => {
       if (result) {
+        const dest = result.selected ?? "PSI"
+        const destPath = (dest == "PSI") ? "/archive/retrieve" : dest
         this.archivingSrv.retrieve(this.selectedSets, destPath).subscribe(
           () => this.store.dispatch(clearSelectionAction()),
           err =>
@@ -141,7 +148,7 @@ export class DatasetTableActionsComponent implements OnInit, OnDestroy {
     private archivingSrv: ArchivingService,
     public dialog: MatDialog,
     private store: Store<any>
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.subscriptions.push(
