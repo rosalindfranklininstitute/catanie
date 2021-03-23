@@ -40,6 +40,9 @@ import { JobsModule } from "jobs/jobs.module";
 import { InstrumentsModule } from "./instruments/instruments.module";
 import { FilesModule } from "files/files.module";
 
+import {HancockService} from "datasets/hancock.service";
+import {DownloadService} from "datasets/download.service";
+
 @NgModule({
   declarations: [AppComponent],
   imports: [
@@ -91,7 +94,7 @@ import { FilesModule } from "files/files.module";
     }),
   ],
   exports: [MatNativeDateModule],
-  providers: [UserApi, SampleApi, Title, MatNativeDateModule],
+  providers: [HancockService, DownloadService, UserApi, SampleApi, Title, MatNativeDateModule],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

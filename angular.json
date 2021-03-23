@@ -381,6 +381,7 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
             "browserTarget": "catanie:build",
+            "proxyConfig": "src/proxy.conf.json",
             "port": 4200,
             "host": "0.0.0.0"
           },

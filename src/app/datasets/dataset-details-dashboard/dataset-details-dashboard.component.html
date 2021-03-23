@@ -17,6 +17,23 @@
           >
             Jupyter Hub
           </a>
+          <a
+            mat-raised-button
+            target="_blank"
+            class="jupyter-button"
+            (click) ="getPresignedURL()"
+          >
+            Get PresignedURL
+          </a>
+          <a 
+            mat-raised-button
+            *ngIf = "hidden"
+            target="_blank"
+            class="jupyter-button"
+            (click) ="download()"
+          >
+            Download This File
+          </a>
         </div>
         <div fxFlex="auto">
           <mat-slide-toggle

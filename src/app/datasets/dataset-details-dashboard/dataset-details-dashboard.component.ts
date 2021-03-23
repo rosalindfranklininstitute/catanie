@@ -43,6 +43,11 @@ import { getCurrentProposal } from "state-management/selectors/proposals.selecto
 import { fetchSampleAction } from "state-management/actions/samples.actions";
 import { getCurrentSample } from "state-management/selectors/samples.selectors";
 
+import {HancockService} from '../hancock.service';
+import {DownloadService} from '../download.service';
+import { saveAs } from 'file-saver';
+import {urls} from '../urls';
+
 @Component({
   selector: "dataset-details-dashboard",
   templateUrl: "./dataset-details-dashboard.component.html",
@@ -65,8 +70,39 @@ export class DatasetDetailsDashboardComponent
   pickedFile: ReadFile;
   attachment: Attachment;
 
+  hidden : boolean = false;
+  presignedURL : string ="";
+
+  getPresignedURL() : void {
+    //this.presignedURL = this.dataset.pid + this.dataset.sourceFolder + this.dataset.sourceFolderHost;
+    const pid = this.dataset.pid;
+    const hostfolder = this.dataset.sourceFolder; 
+    const bucket = this.dataset.sourceFolderHost;
+    alert(hostfolder+ "\n"+bucket);
+    //this.hancockservice.getPresignedURL(pid, hostfolder).subscribe(res => this.presignedURL =JSON.stringify(res));
+    //console.log(this.presignedURL);
+    //this.hancockservice.fetchData(pid,hostfolder).then( res => this.presignedURL =JSON.stringify(res));
+    this.hancockservice.getToekn().subscribe( res => this.presignedURL = (JSON.stringify(res)));
+    //rep.then(res => this.presignedURL =res['presignedURL']);
+    //this.presignedURL = JSON.stringify(rep);
+    setTimeout(( ) => { alert("Do you want to download the file at: \n"+this.presignedURL); this.hidden = true;}, 3000);
+    
+    //window.alert("Do you want to download the file at: \n"+this.presignedURL);
+
+    //window.alert(this.presignedURL);
+    
+  }
+
+  download() :void{
+    let fname = this.dataset.datasetName;
+    window.alert(fname);
+    this.downloadservice.download(this.presignedURL).subscribe(blob => saveAs(blob, fname));
+  }
+
   constructor(
     @Inject(APP_CONFIG) public appConfig: AppConfig,
+    private hancockservice : HancockService,
+    private downloadservice : DownloadService,
     private cdRef: ChangeDetectorRef,
     private route: ActivatedRoute,
     private router: Router,
