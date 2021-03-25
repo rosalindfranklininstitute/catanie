@@ -1,7 +1,8 @@
 {
-    "/download": {
+    "/download/*": {
       "target": "https://s3.echo.stfc.ac.uk/",
-      "secure": false
+      "secure": true,
+      "changeOrigin": true
     },
     "/login": {
       "target": "http://localhost:3000/auth/msad",

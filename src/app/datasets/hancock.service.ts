@@ -12,25 +12,22 @@ export class HancockService {
 
   constructor(private httpClient: HttpClient) { }
 
-  getPresignedURL(pid: string, hostfolder: string): Observable<string>{
-    
-    const params = new HttpParams()
-           .set('pid', pid)
-           .set('hostfolder', hostfolder);
-    //window.alert(params.toString());
-    return this.httpClient.get<string>(this.baseURL+'getURL', {params});
+  getPresignedURL(bucket: string, key: string, token: string): Observable<any>{
+    const httpheader = new HttpHeaders().set("Authorization", "Bearer "+token).set("Content-Type", "application/json");
+    const body : string = "{\"Bucket\": \""+ bucket + "\", " + "\"Key\": \"" +key + "\"}";
+    //const httpClient : HttpClient = new HttpClient().post("http://locahost:5000/api/fetch_url", body, header);
+    //const header : HttpHeaders =new HttpHeaders().set('Authorization', 'Bearer '+token);
+    let options = {
+      //'Content-Type': 'application/json',
+      headers: httpheader
+    };    
+    return this.httpClient.post(this.baseURL+'fetch_url', body, options);
   }
 
-  getToekn( ){
-    
-    const params = new HttpParams()
-           .set('username', this.username)
-           .set('password', this.passwd);
-    //window.alert(params.toString());
-    let body = {'username': this.username, 'password': this.passwd};
-    alert(JSON.stringify(body));
-    return this.httpClient.post('/api/token', JSON.stringify(body));
-    //return this.httpClient.post('/api/token', {'username': 'catanie', 'password': 'flyingpig'});
+  getToekn( ) : Observable<any>{
+    //let body = {'username': this.username, 'password': this.passwd};
+    //return this.httpClient.post('/api/token', JSON.stringify(body));
+    return this.httpClient.post(this.baseURL+'token', {'username': 'catanie', 'password': 'flyingpig'});
   }
 
   async fetchData(pid: string, hostfolder: string) {

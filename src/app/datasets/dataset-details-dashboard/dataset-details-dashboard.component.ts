@@ -47,6 +47,7 @@ import {HancockService} from '../hancock.service';
 import {DownloadService} from '../download.service';
 import { saveAs } from 'file-saver';
 import {urls} from '../urls';
+import { HttpClient, HttpHeaders } from "@angular/common/http";
 
 @Component({
   selector: "dataset-details-dashboard",
@@ -75,14 +76,19 @@ export class DatasetDetailsDashboardComponent
 
   getPresignedURL() : void {
     //this.presignedURL = this.dataset.pid + this.dataset.sourceFolder + this.dataset.sourceFolderHost;
-    const pid = this.dataset.pid;
-    const hostfolder = this.dataset.sourceFolder; 
-    const bucket = this.dataset.sourceFolderHost;
-    alert(hostfolder+ "\n"+bucket);
+    let token : string ="";
+    let url_prefix_length : number = "https://".length;
+    const key = this.dataset.sourceFolder; 
+    const bucket = this.dataset.sourceFolderHost.split('.')[0].substr(url_prefix_length,);
+    alert(key+ "\n"+bucket);
+ 
     //this.hancockservice.getPresignedURL(pid, hostfolder).subscribe(res => this.presignedURL =JSON.stringify(res));
     //console.log(this.presignedURL);
     //this.hancockservice.fetchData(pid,hostfolder).then( res => this.presignedURL =JSON.stringify(res));
-    this.hancockservice.getToekn().subscribe( res => this.presignedURL = (JSON.stringify(res)));
+    this.hancockservice.getToekn().subscribe( res => token = res['access_token']);
+    setTimeout(( ) =>{this.hancockservice.getPresignedURL(bucket, key, token).subscribe( url =>this.presignedURL = url["presigned_url"]);}, 2000);
+    //this.hancockservice.getPresignedURL(bucket, key, token).subscribe( url =>this.presignedURL = JSON.stringify(url));
+    
     //rep.then(res => this.presignedURL =res['presignedURL']);
     //this.presignedURL = JSON.stringify(rep);
     setTimeout(( ) => { alert("Do you want to download the file at: \n"+this.presignedURL); this.hidden = true;}, 3000);
@@ -94,9 +100,11 @@ export class DatasetDetailsDashboardComponent
   }
 
   download() :void{
-    let fname = this.dataset.datasetName;
-    window.alert(fname);
-    this.downloadservice.download(this.presignedURL).subscribe(blob => saveAs(blob, fname));
+    let fname = this.dataset.sourceFolder;
+    
+    let dummy_url : string = this.presignedURL.replace("https://s3.echo.stfc.ac.uk/", "/download/");
+    alert(dummy_url);
+    this.downloadservice.download(dummy_url).subscribe(blob => saveAs(blob, fname));
   }
 
   constructor(
