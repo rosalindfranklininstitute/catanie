@@ -46,8 +46,10 @@ import { getCurrentSample } from "state-management/selectors/samples.selectors";
 import {HancockService} from '../hancock.service';
 import {DownloadService} from '../download.service';
 import { saveAs } from 'file-saver';
-import {urls} from '../urls';
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
+import { asLiteral } from "@angular/compiler/src/render3/view/util";
+
 
 @Component({
   selector: "dataset-details-dashboard",
@@ -71,27 +73,60 @@ export class DatasetDetailsDashboardComponent
   pickedFile: ReadFile;
   attachment: Attachment;
 
-  hidden : boolean = false;
-  presignedURL : string ="";
+  hidden ?: boolean = false;
+  presignedURL ?: string ="";
 
   getPresignedURL() : void {
-    //this.presignedURL = this.dataset.pid + this.dataset.sourceFolder + this.dataset.sourceFolderHost;
     let token : string ="";
+    //for parsing URL to get the bucket name
     let url_prefix_length : number = "https://".length;
+    // key for s3 datastore
     const key = this.dataset.sourceFolder; 
-    const bucket = this.dataset.sourceFolderHost.split('.')[0].substr(url_prefix_length,);
-    alert(key+ "\n"+bucket);
- 
-    //this.hancockservice.getPresignedURL(pid, hostfolder).subscribe(res => this.presignedURL =JSON.stringify(res));
-    //console.log(this.presignedURL);
-    //this.hancockservice.fetchData(pid,hostfolder).then( res => this.presignedURL =JSON.stringify(res));
-    this.hancockservice.getToekn().subscribe( res => token = res['access_token']);
-    setTimeout(( ) =>{this.hancockservice.getPresignedURL(bucket, key, token).subscribe( url =>this.presignedURL = url["presigned_url"]);}, 2000);
+
+    //buckct name for datastore
+    //const bucket = this.dataset.sourceFolderHost.split('.')[0].substr(url_prefix_length,);
+    const bucket = this.dataset.sourceFolderHost;
+
+    //The value below be check at the matching html file. If it's the (.txt), a getpresigned button will appear.
+    const dataFormat :string =this.dataset['dataFormat'];
+
+    //instrument location
+    const location  = this.dataset['creationLocation'];
+    alert(key + "  "+ bucket);
+    
+  
+    this.hancockservice.getToekn().then( res => { token = res["access_token"];
+                                                                        console.log("Catanie get token from the server");
+                                                                       },
+                                                                  error => console.error(error));   
+                                                                                                                            
+    //setTimeout(( ) => {this.hancockservice.getToekn().subscribe( res => { token = res["access_token"];
+    //                                                                    console.log("Catanie get token from the server");
+    //                                                                    },
+    //                                                              error => console.error(error));                                                   
+    //                  }, 2500);
+    //alert(token);
+    let temp : string =""
+    setTimeout(( ) =>{this.hancockservice.getPresignedURL(bucket, key, location, token).subscribe( url =>{temp = url["presigned_url"].trim();
+                                                     console.log("Get URL " + temp)},
+                                                     error => console.error(error));},1500);
+
+    //let url_length = this.presignedURL.length;
+     
+
     //this.hancockservice.getPresignedURL(bucket, key, token).subscribe( url =>this.presignedURL = JSON.stringify(url));
     
     //rep.then(res => this.presignedURL =res['presignedURL']);
-    //this.presignedURL = JSON.stringify(rep);
-    setTimeout(( ) => { alert("Do you want to download the file at: \n"+this.presignedURL); this.hidden = true;}, 3000);
+  
+    //alert(this.presignedURL);
+    //this.presignedURL = this.presignedURL.substr(2, url_length - 2);
+
+    //The returned presigned URL only have ONE item. Multitple items be dealt with retrieve button.
+    //So the parsing way is fixed beneath.
+    setTimeout(( ) => { this.presignedURL = temp.substring(2, temp.length-2);
+                          console.log(this.presignedURL);
+                          this.hidden =true;
+                      } ,  2000);
     
     //window.alert("Do you want to download the file at: \n"+this.presignedURL);
 
@@ -102,9 +137,14 @@ export class DatasetDetailsDashboardComponent
   download() :void{
     let fname = this.dataset.sourceFolder;
     
-    let dummy_url : string = this.presignedURL.replace("https://s3.echo.stfc.ac.uk/", "/download/");
+    let dummy_url : string = this.presignedURL[0].replace("https://s3.echo.stfc.ac.uk/", "/download/");
     alert(dummy_url);
     this.downloadservice.download(dummy_url).subscribe(blob => saveAs(blob, fname));
+  }
+
+  openLink() :void{
+    alert(this.presignedURL);
+    window.open(this.presignedURL, "a_blank")
   }
 
   constructor(

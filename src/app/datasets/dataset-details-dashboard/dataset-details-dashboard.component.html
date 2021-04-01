@@ -19,6 +19,7 @@
           </a>
           <a
             mat-raised-button
+            *ngIf = "dataset['dataFormat']==='.txt'"
             target="_blank"
             class="jupyter-button"
             (click) ="getPresignedURL()"
@@ -30,7 +31,7 @@
             *ngIf = "hidden"
             target="_blank"
             class="jupyter-button"
-            (click) ="download()"
+            (click) ="openLink()"
           >
             Download This File
           </a>

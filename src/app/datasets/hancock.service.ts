@@ -1,33 +1,38 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class HancockService {
-  baseURL: string = "http://127.0.0.1:5000/api/";
+  #baseURL: string = "http://127.0.0.1:5000/api/";
+  baseURL: string = "/api/";
   username : string ="catanie";
   passwd : string ="flyingpig";
 
   constructor(private httpClient: HttpClient) { }
 
-  getPresignedURL(bucket: string, key: string, token: string): Observable<any>{
+  getPresignedURL(bucket: string, key: string, location : string, token: string): Observable<any> {
     const httpheader = new HttpHeaders().set("Authorization", "Bearer "+token).set("Content-Type", "application/json");
-    const body : string = "{\"Bucket\": \""+ bucket + "\", " + "\"Key\": \"" +key + "\"}";
-    //const httpClient : HttpClient = new HttpClient().post("http://locahost:5000/api/fetch_url", body, header);
-    //const header : HttpHeaders =new HttpHeaders().set('Authorization', 'Bearer '+token);
+
+    //For fetch_url
+    //const body : string = "{\"bucket\": \""+ bucket + "\"," + "\"key\": \"" +key + "\"," +"\"s3_account_name\":\"" +location +"\"}";
+
+    //For fetch_url_from_source
+    const body : string = "{\"creationLocation\":\"" +location +"\",\"sourceFolderHost\": \""+ bucket + "\"," + "\"sourceFolder\":\"" +key + "\"}";
+
+
     let options = {
-      //'Content-Type': 'application/json',
       headers: httpheader
     };    
-    return this.httpClient.post(this.baseURL+'fetch_url', body, options);
+    return this.httpClient.post(this.baseURL+'fetch_url_from_source', body, options);
   }
 
-  getToekn( ) : Observable<any>{
-    //let body = {'username': this.username, 'password': this.passwd};
-    //return this.httpClient.post('/api/token', JSON.stringify(body));
-    return this.httpClient.post(this.baseURL+'token', {'username': 'catanie', 'password': 'flyingpig'});
+  async getToekn( ) {
+    let body = {"username": this.username, "password": this.passwd};
+
+    return await this.httpClient.post(this.baseURL +'token', body).toPromise();
   }
 
   async fetchData(pid: string, hostfolder: string) {

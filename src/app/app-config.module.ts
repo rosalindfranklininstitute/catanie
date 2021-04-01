@@ -30,6 +30,7 @@ export class AppConfig {
   localColumns: TableColumn[];
   logbookEnabled: boolean;
   fileDownloadEnabled: boolean;
+  rfiDownloadEnabled: boolean;
   maxDirectDownloadSize: number;
   metadataPreviewEnabled: boolean;
   multipleDownloadAction?: string;
@@ -87,6 +88,7 @@ export const APP_DI_CONFIG: AppConfig = {
   ],
   maxDirectDownloadSize: environment["maxDirectDownloadSize"] || null,
   fileDownloadEnabled: environment["fileDownloadEnabled"] || false,
+  rfiDownloadEnabled: environment["rfiDownloadEnabled"] || false,
   metadataPreviewEnabled: environment["metadataPreviewEnabled"] || false,
   multipleDownloadAction: environment["multipleDownloadAction"],
   multipleDownloadEnabled: environment["multipleDownloadEnabled"] || false,
