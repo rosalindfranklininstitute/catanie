@@ -19,7 +19,7 @@
           </a>
           <a
             mat-raised-button
-            *ngIf = "dataset['dataFormat']==='.txt'"
+            *ngIf = "dataset['dataFormat']!=='directory'"
             target="_blank"
             class="jupyter-button"
             (click) ="getPresignedURL()"
