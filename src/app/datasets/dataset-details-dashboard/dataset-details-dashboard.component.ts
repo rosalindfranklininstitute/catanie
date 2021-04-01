@@ -92,7 +92,7 @@ export class DatasetDetailsDashboardComponent
 
     //instrument location
     const location  = this.dataset['creationLocation'];
-    alert(key + "  "+ bucket);
+
     
   
     this.hancockservice.getToekn().then( res => { token = res["access_token"];
@@ -143,7 +143,6 @@ export class DatasetDetailsDashboardComponent
   }
 
   openLink() :void{
-    alert(this.presignedURL);
     window.open(this.presignedURL, "a_blank")
   }
 
