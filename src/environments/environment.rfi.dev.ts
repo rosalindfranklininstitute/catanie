@@ -2,7 +2,7 @@ import { TableColumn } from "state-management/models";
 
 export const environment = {
   production: true,
-  lbBaseURL: "https://scicat-dev.rfi.ac.uk",
+  lbBaseURL: "http://localhost",
   fileserverBaseURL: "/fileserver",
   synapseBaseUrl: "https://scitest.maxiv.lu.se",
   riotBaseUrl: "http://scichat.maxiv.lu.se",
